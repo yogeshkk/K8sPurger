@@ -102,14 +102,14 @@ def GetUsedResources(v1):
             container = i.spec.containers
             for item in container:
                 if item.env is not None:
-                    for secret in item.env:
-                        if secret.value_from is not None:
-                            if secret.value_from.secret_key_ref is not None:
+                    for env in item.env:
+                        if env.value_from is not None:
+                            if env.value_from.secret_key_ref is not None:
                                 UsedSecret.append(
-                                    [secret.value_from.secret_key_ref.name, i.metadata.namespace])
-                            elif secret.value_from.config_map_key_ref is not None:
+                                    [env.value_from.secret_key_ref.name, i.metadata.namespace])
+                            elif env.value_from.config_map_key_ref is not None:
                                 UsedConfigMap.append(
-                                    [secret.value_from.config_map_key_ref.name, i.metadata.namespace])
+                                    [env.value_from.config_map_key_ref.name, i.metadata.namespace])
             for volume in i.spec.volumes:
                 if volume.secret is not None:
                     UsedSecret.append([volume.secret.secret_name, i.metadata.namespace])
@@ -168,7 +168,7 @@ def DeleteSecret(v1, ExtraSecret):
             except Exception as e:
                 print("Not able to reach Kubernetes cluster check Kubeconfig")
                 raise RuntimeError(e)
-        print("Deleted All Unused Secret.")
+        print("Deleted All Unused Secret.\n")
 
 
 def DeleteCM(v1, ExtraConfigMap):
@@ -182,7 +182,7 @@ def DeleteCM(v1, ExtraConfigMap):
             except Exception as e:
                 print("Not able to reach Kubernetes cluster check Kubeconfig")
                 raise RuntimeError(e)
-        print("Deleted All Unused ConfigMap.")
+        print("Deleted All Unused ConfigMap.\n")
 
 
 def DeletePVC(v1, ExtraPVC):
@@ -196,7 +196,7 @@ def DeletePVC(v1, ExtraPVC):
             except Exception as e:
                 print("Not able to reach Kubernetes cluster check Kubeconfig")
                 raise RuntimeError(e)
-        print("Deleted All Unused PVC.")
+        print("Deleted All Unused PVC.\n")
 
 
 if __name__ == '__main__':

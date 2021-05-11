@@ -36,6 +36,8 @@ By default, it will run in dry-run mode and just show you the unused resources. 
 ```
 yogesh$ python K8sPurger.py
 
+This script is created to find unused  resource in Kubernetes and delete them
+
 Extra Secrets are 3 which are as below
 ---------------------------
 | Secrets       |Namespace |

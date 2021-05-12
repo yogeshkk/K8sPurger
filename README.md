@@ -68,8 +68,7 @@ pip install kubernetes
 python K8sPurger.py
 ```
 
-By default, it will run in dry-run mode and just show you the unused resources. This script is created to find the unused resource in Kubernetes and delete them. If you are sure you can delete the resources by appending flag --delete=true
-
+### By default, it will run in dry-run mode and just show you the unused resources such as.
 
 ```
 yogesh$ python K8sPurger.py
@@ -103,7 +102,10 @@ Extra PV Claim are 1 which are as below
 ---------------------------
 | task-pv-claim |default   |
 ---------------------------
+```
+### If you are sure you can delete the resources by appending flag --delete=true
 
+```
 yogesh$ python K8sPurger.py --delete=true
 
 This script is created to find an unused  resource in Kubernetes and delete them
@@ -154,7 +156,10 @@ Deleted All Unused ConfigMap.
 
 Deleting PVC task-pv-claim....
 Deleted All Unused PVC.
+```
+###  You can say no even after passing --delete=true flag and script won't delete the resources.
 
+```
 yogesh$ python K8sPurger.py --delete=true
 
 This script is created to find unused  resource in Kubernetes and delete them
@@ -171,6 +176,6 @@ n
 You choose not to auto delete. Great choice! You can clean them up manually.
 ```
 
-NOTE:- You can browse code and if like idea provides star for encouragement or provide feedback to me one below social networks.
+### NOTE:- You can browse code and if like idea provides star for encouragement or provide feedback to me one below social networks.
 
 Twitter https://twitter.com/yogeshkunjir LinkedIn https://www.linkedin.com/in/yogeshkunjir/

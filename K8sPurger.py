@@ -1,19 +1,4 @@
-# Copyright © 2021 Yogesh Kunjir <yogesh.kunjir@gmail.com>
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+#!/usr/bin/python
 
 from kubernetes import config, client
 import argparse
@@ -115,7 +100,7 @@ def GetUsedResources(v1):
                     UsedSecret.append([volume.secret.secret_name, i.metadata.namespace])
                 elif volume.config_map is not None:
                     UsedConfigMap.append([volume.config_map.name, i.metadata.namespace])
-                elif volume.persistent_volume_claim.claim_name is not None:
+                elif volume.persistent_volume_claim is not None:
                     UsedPVC.append([volume.persistent_volume_claim.claim_name, i.metadata.namespace])
 
 

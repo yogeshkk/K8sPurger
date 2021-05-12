@@ -164,11 +164,11 @@ yogesh$ python K8sPurger.py --delete=true
 
 This script is created to find unused  resource in Kubernetes and delete them
 
-Hurrey You don't have a unused Secrets
+Hurray You don't have a unused Secrets
  
-Hurrey You don't have a unused ConfigMap
+Hurray You don't have a unused ConfigMap
  
-Hurrey You don't have a unused PV Claim
+Hurray You don't have a unused PV Claim
  
 You have selected to delete unused items which are as above you want to continue?
 Type yes or y to continue or any key to exit.

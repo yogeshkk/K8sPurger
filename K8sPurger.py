@@ -57,7 +57,7 @@ def Diffrance(listA, listB):
 
 def PrintList(Toprint, name):
     if len(Toprint) == 0:
-        print("Hurrey You don't have a unused " + name)
+        print("hurray You don't have a unused " + name)
     else:
         print("\nExtra " + name + " are " + str(len(Toprint)) + " which are as below")
         size1 = max(len(word[0]) for word in Toprint)

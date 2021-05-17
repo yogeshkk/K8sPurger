@@ -95,13 +95,14 @@ def GetUsedResources(v1):
                             elif env.value_from.config_map_key_ref is not None:
                                 UsedConfigMap.append(
                                     [env.value_from.config_map_key_ref.name, i.metadata.namespace])
-            for volume in i.spec.volumes:
-                if volume.secret is not None:
-                    UsedSecret.append([volume.secret.secret_name, i.metadata.namespace])
-                elif volume.config_map is not None:
-                    UsedConfigMap.append([volume.config_map.name, i.metadata.namespace])
-                elif volume.persistent_volume_claim is not None:
-                    UsedPVC.append([volume.persistent_volume_claim.claim_name, i.metadata.namespace])
+            if i.spec.volumes is not None:                      
+                for volume in i.spec.volumes:
+                    if volume.secret is not None:
+                        UsedSecret.append([volume.secret.secret_name, i.metadata.namespace])
+                    elif volume.config_map is not None:
+                        UsedConfigMap.append([volume.config_map.name, i.metadata.namespace])
+                    elif volume.persistent_volume_claim is not None:
+                        UsedPVC.append([volume.persistent_volume_claim.claim_name, i.metadata.namespace])
 
 
 def DefinedSecret(v1):

@@ -21,7 +21,7 @@ under the License.
 
 ## A Simple script to hunt and delete unused Kubernetes resources such as Services, Secret, ConfigMap, and Persistent Volume Claim
 
-# Update:- Added Services in the mix.
+### Update:- Added Services in the mix.
 
 NAQ (Nobody asked Question).
 

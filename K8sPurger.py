@@ -3,8 +3,8 @@
 from kubernetes import config, client
 import argparse
 
-UsedSecret, UsedConfigMap, UsedPVC = [], [], []
-Secrets, ConfigMap, PVC = [], [], []
+UsedSecret, UsedConfigMap, UsedPVC, UsedEP= [], [], [], []
+Secrets, ConfigMap, PVC, EP = [], [], [], []
 
 
 def main():
@@ -20,19 +20,26 @@ def main():
         print("Not able to read Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     GetUsedResources(v1)
+    GetUsedServices(v1)
     DefinedSecret(v1)
     DefinedConfigMap(v1)
     DefinedPersistentVolumeClaim(v1)
+    DefinedSvc(v1)
     ExtraSecret = Diffrance(Secrets, UsedSecret)
     PrintList(ExtraSecret, "Secrets")
     ExtraConfigMap = Diffrance(ConfigMap, UsedConfigMap)
     PrintList(ExtraConfigMap, "ConfigMap")
     ExtraPVC = Diffrance(PVC, UsedPVC)
     PrintList(ExtraPVC, "PV Claim")
-    DeleteEnabled(v1, args, ExtraSecret, ExtraConfigMap, ExtraPVC)
+    ExtraPVC = Diffrance(PVC, UsedPVC)
+    PrintList(ExtraPVC, "PV Claim")
+    ExtraSVC = Diffrance(EP, UsedEP)
+    PrintList(ExtraSVC, "Services")
+    DeleteEnabled(v1, args, ExtraSecret, ExtraConfigMap, ExtraPVC, ExtraSVC)
 
 
-def DeleteEnabled(v1, args, ExtraSecret, ExtraConfigMap, ExtraPVC):
+
+def DeleteEnabled(v1, args, ExtraSecret, ExtraConfigMap, ExtraPVC, ExtraSVC):
     arg = {'true', 'True', 'TRUE'}
     yes = {'yes', 'y'}
     if args.delete in arg:
@@ -43,6 +50,7 @@ def DeleteEnabled(v1, args, ExtraSecret, ExtraConfigMap, ExtraPVC):
             DeleteSecret(v1, ExtraSecret)
             DeleteCM(v1, ExtraConfigMap)
             DeletePVC(v1, ExtraPVC)
+            DeleteSVC(v1, ExtraSVC)
         else:
             print("You choose not to auto delete. Great choice! You can clean them up manually.")
 
@@ -57,7 +65,7 @@ def Diffrance(listA, listB):
 
 def PrintList(Toprint, name):
     if len(Toprint) == 0:
-        print("hurray You don't have a unused " + name)
+        print("Hurray You don't have a unused " + name)
     else:
         print("\nExtra " + name + " are " + str(len(Toprint)) + " which are as below")
         size1 = max(len(word[0]) for word in Toprint)
@@ -103,6 +111,30 @@ def GetUsedResources(v1):
                         UsedConfigMap.append([volume.config_map.name, i.metadata.namespace])
                     elif volume.persistent_volume_claim is not None:
                         UsedPVC.append([volume.persistent_volume_claim.claim_name, i.metadata.namespace])
+
+def DefinedSvc(v1):
+    try:
+        ApiResponce = v1.list_service_for_all_namespaces(watch=False)
+    except Exception as e:
+        print("Not able to reach Kubernetes cluster check Kubeconfig")
+        raise RuntimeError(e)
+    for i in ApiResponce.items:
+        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+            pass
+        else:
+            EP.append([i.metadata.name, i.metadata.namespace])
+
+def GetUsedServices(v1):
+    try:
+        ApiResponce = v1.list_endpoints_for_all_namespaces(watch=False)
+    except Exception as e:
+        print("Not able to reach Kubernetes cluster check Kubeconfig")
+        raise RuntimeError(e)
+    for i in ApiResponce.items:
+        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+            pass
+        elif i.subsets is not None:
+            UsedEP.append([i.metadata.name, i.metadata.namespace])
 
 
 def DefinedSecret(v1):
@@ -184,6 +216,19 @@ def DeletePVC(v1, ExtraPVC):
                 raise RuntimeError(e)
         print("Deleted All Unused PVC.\n")
 
+
+def DeleteSVC(v1, ExtraSVC):
+    if len(ExtraSVC) == 0:
+        print("No Unused service to delete. Skipping deletion.")
+    else:
+        for item in ExtraSVC:
+            print("Deleting Svc " + item[0] + "....")
+            try:
+                _ = v1.delete_namespaced_service(item[0], item[1])
+            except Exception as e:
+                print("Not able to reach Kubernetes cluster check Kubeconfig")
+                raise RuntimeError(e)
+        print("Deleted All Unused Svc.\n")
 
 if __name__ == '__main__':
     main()

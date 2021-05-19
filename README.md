@@ -19,7 +19,9 @@ under the License.
 
 # K8SPurger
 
-## A Simple script to hunt and delete unused Kubernetes resources such as Secret, ConfigMap, and Persistent Volume Claim
+## A Simple script to hunt and delete unused Kubernetes resources such as Services, Secret, ConfigMap, and Persistent Volume Claim
+
+# Update:- Added Services in the mix.
 
 NAQ (Nobody asked Question).
 
@@ -49,11 +51,15 @@ A:- Yes, in that case, the resource will be shown as unused. That's why this scr
 
 A:- Normally we use PVC to manage PV and when we delete claims, PV will be deleted or retained as per storage-class configuration. To avoid any potential data loss I choose to work with PVC only.
 
-7) What if I hit a bug or required any feature?
+7) I see you have added service how that work?
+
+A:- The logic is same if we have defined a service but it does not have any endpoint then I am marking as service unused as any traffice send to service result in error.
+
+8) What if I hit a bug or required any feature?
 
 A:- You can raise an issue. I will try to fix the bug. The feature has to look into how much time is required.
 
-8) I did check the script your python code is awful?
+9) I did check the script your python code is awful?
 
 A:- Yes. As I said I am learning any guidance is welcome. You can raise PR so I can understand how PRO writes the code and improve my code.
 
@@ -102,6 +108,12 @@ Extra PV Claim are 1 which are as below
 ---------------------------
 | task-pv-claim |default   |
 ---------------------------
+
+Extra Services are 1 which are as below
+--------------------------
+| Services     |Namespace |
+--------------------------
+| icinga-agent |default   |
 ```
 ### If you are sure you can delete the resources by appending flag --delete=true
 
@@ -138,7 +150,13 @@ Extra PV Claim are 1 which are as below
 ---------------------------
 | task-pv-claim |default   |
 ---------------------------
- 
+
+Extra Services are 1 which are as below
+--------------------------
+| Services     |Namespace |
+--------------------------
+| icinga-agent |default   |
+
 You have selected to delete unused items which are as above you want to continue?
 Type yes or y to continue or any key to exit.
 y
@@ -156,6 +174,9 @@ Deleted All Unused ConfigMap.
 
 Deleting PVC task-pv-claim....
 Deleted All Unused PVC.
+
+Deleting Svc icinga-agent....
+Deleted All Unused Svc.
 ```
 ###  You can say no even after passing --delete=true flag and script won't delete the resources.
 
@@ -169,7 +190,9 @@ Hurray You don't have a unused Secrets
 Hurray You don't have a unused ConfigMap
  
 Hurray You don't have a unused PV Claim
- 
+
+Hurray You don't have a unused Services
+
 You have selected to delete unused items which are as above you want to continue?
 Type yes or y to continue or any key to exit.
 n

@@ -26,6 +26,12 @@ under the License.
 
 ### Release History
 
+Release 0.31 
+
+ - Added Deployment
+ - Added Stateful Set
+ - Added support for env_from to resolve issue. [Refer issue 4](https://github.com/yogeshkk/K8sPurger/issues/4)
+
 Release 0.3 
 
  - Added Ingress
@@ -199,6 +205,24 @@ Extra Role Binding are 1 which are as below
 ---------------------------
 | app1-rb      |my-apps   |
 ---------------------------
+
+
+Extra Deployment are 1 which are as below
+
+--------------------------------
+| Deployment         |Namespace |
+--------------------------------
+| busybox-deployment |default   |
+--------------------------------
+ 
+
+Extra Stateful Sets are 1 which are as below
+
+----------------------------
+| Stateful Sets  |Namespace |
+----------------------------
+| nginx-sts-test |default   |
+----------------------------
 
 ```
 

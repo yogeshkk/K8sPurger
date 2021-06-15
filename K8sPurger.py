@@ -113,7 +113,7 @@ def GetUsedResources(v1):
                 if item.env_from is not None:
                     for env_from in item.env_from:
                         if env_from.config_map_ref is not None:
-                            UsedConfigMap.append([volume.config_map_ref.name, i.metadata.namespace])
+                            UsedConfigMap.append([env_from.config_map_ref.name, i.metadata.namespace])
                         elif env_from.secret_ref is not None:
                             UsedSecret.append([env_from.secret_ref.name, i.metadata.namespace])
             if i.spec.volumes is not None:

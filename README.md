@@ -20,11 +20,17 @@ under the License.
 
   
 
-## A Simple script to hunt unused Kubernetes resources.
+## Hunt Unused Resources In Kubernetes.
 
   
 
 ### Release History
+
+Release 0.35
+
+ - Refactored to work as a service inside Kubernetes and exporting metrics in Prometheus which can be viewed from Grafana dashboard
+ - Added Grafana dashboard
+ - Fixed external services as false positive. [Refer issue 4](https://github.com/yogeshkk/K8sPurger/issues/6)
 
 Release 0.31 
 
@@ -39,14 +45,11 @@ Release 0.3
  - Adding RoleBindding
  - Removed deletion capability. [Refer issue 3](https://github.com/yogeshkk/K8sPurger/issues/3)
 
-Release 0.2
- - Added services in the mix.
 
-  
-
+ 
+ 
 ### NAQ (Nobody asked Question).
 
-  
 
 1) What this script do?
 > This will find all unused resources and show them in a nice format.
@@ -89,25 +92,37 @@ Exclusion:- All objects in kube-system and kube-system are excluded also all sec
 
 ## Installation and Configuration
 
-  
 
+
+#### Installing in Kubernetes
+
+Deploy manifest in kubernetes and prometheus should scrape all the metrics.
+
+NOTE :- Service will scan for unused resources every 15 minutes which you can changing by setting REFRESH_INTERVAL(in second) in deployment.yaml
+
+```
+git clone https://github.com/yogeshkk/K8sPurger
+cd K8sPurger
+Kubectl apply -f deploy/manifest.yaml
+```
+
+Then you can import the k8sPurger Dashboard from deploy folder to create dashbaord like below.
+
+![grafana](documentation/grafana_dashbaord.png)
+
+
+
+
+###  Running From shell 
 This script use [Python client for Kuberntes](https://github.com/kubernetes-client/python). We need to install that first
-
-  
+Make sure you have kubeconfig in ~/.kube/conf or in KUBECONFIG env variable before runing script.
 
 ```
-
 pip install kubernetes
-
 python K8sPurger.py
-
 ```
 
-
-### Make sure you have kubeconfig in ~/.kube/conf or in KUBECONFIG env variable before runing script.
-
-  
-
+Output Will look like below
 ```
 
 yogesh$ ~/p/K8sPurger> python K8sPurger.py

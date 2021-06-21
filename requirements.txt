@@ -1,0 +1,8 @@
+Werkzeug==2.0.1
+Flask==2.0.1
+flask_oidc==1.4.0
+requests~=2.25.1
+gunicorn~=20.1.0
+kubernetes
+threaded
+prometheus_client

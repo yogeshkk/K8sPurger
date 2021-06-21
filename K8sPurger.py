@@ -1,22 +1,26 @@
 #!/usr/bin/python
 
+import argparse
+import os
+import time
+
 from kubernetes import config, client
+from prometheus_client import start_http_server, Gauge
 
-# import argparse
-
-UsedSecret, UsedConfigMap, UsedPVC, UsedEP, UsedSA, ExtraRoleBinding, ExtraIng, ExtraDep, ExtraSTS = [], [], [], [], [], [], [], [], []
-Secrets, ConfigMap, PVC, EP, SA, = [], [], [], [], []
+UsedSecret, UsedConfigMap, UsedPVC, UsedEP, UsedSA, ExtraIng = [], [], [], [], [], []
 Ing, RoleBinding = {}, {}
+g = Gauge('k8s_unused_resources', 'show unused resources in k8s', ['type', 'name', 'namespaces'])
 
 
-def main():
-    print("\nThis script is created to find unused "),
-    print("resource in Kubernetes and delete them\n")
-    # parser = argparse.ArgumentParser(description='Parcer to get delete value')
-    # parser.add_argument('-d', '--delete', help='Input file name', required=False)
-    # args = parser.parse_args()
+
+def main(svc):
+    g.clear()
     try:
-        config.load_kube_config()
+        if svc == "svc":
+            config.load_incluster_config()
+            # config.load_kube_config()
+        else:
+            config.load_kube_config()
         v1 = client.CoreV1Api()
         v1beta1Api = client.ExtensionsV1beta1Api()
         RbacAuthorizationV1Api = client.RbacAuthorizationV1Api()
@@ -26,20 +30,20 @@ def main():
         raise RuntimeError(e)
     print("Getting unused secret it may take couple of minute..")
     GetUsedResources(v1)
-    DefinedSecret(v1)
+    Secrets = DefinedSecret(v1)
     ExtraSecret = Diffrance(Secrets, UsedSecret)
     PrintList(ExtraSecret, "Secrets")
     print("Getting unused ConfigMap it may take couple of minute..")
-    DefinedConfigMap(v1)
+    ConfigMap = DefinedConfigMap(v1)
     ExtraConfigMap = Diffrance(ConfigMap, UsedConfigMap)
     PrintList(ExtraConfigMap, "ConfigMap")
     print("Getting unused PVC it may take couple of minute..")
-    DefinedPersistentVolumeClaim(v1)
+    PVC = DefinedPersistentVolumeClaim(v1)
     ExtraPVC = Diffrance(PVC, UsedPVC)
     PrintList(ExtraPVC, "PV Claim")
     print("Getting unused services it may take couple of minute..")
     GetUsedServices(v1)
-    DefinedSvc(v1)
+    EP = DefinedSvc(v1)
     ExtraSVC = Diffrance(EP, UsedEP)
     PrintList(ExtraSVC, "Services")
     print("Getting unused Ingress it may take couple of minute..")
@@ -47,17 +51,21 @@ def main():
     ExtraIng = GetUnusedIng(EP, ExtraSVC)
     PrintList(ExtraIng, "Ingress")
     print("Getting unused service account it may take couple of minute..")
-    DefinedServiceAccount(v1)
+    SA = DefinedServiceAccount(v1)
     ExtraSA = Diffrance(SA, UsedSA)
     PrintList(ExtraSA, "Service Account")
     print("Getting unused Roles Binding it may take couple of minute..")
-    DefinedRoleBinding(RbacAuthorizationV1Api)
+    _ = DefinedRoleBinding(RbacAuthorizationV1Api)
     ExtraRB = GetUnusedRB(SA, ExtraSA)
     PrintList(ExtraRB, "Role Binding")
-    GetUnusedDeployment(AppsV1Api)
+    ExtraDep = GetUnusedDeployment(AppsV1Api)
     PrintList(ExtraDep, "Deployment")
-    GetUnusedSTS(AppsV1Api)
+    ExtraSTS = GetUnusedSTS(AppsV1Api)
     PrintList(ExtraSTS, "Stateful Sets")
+
+    if svc == "svc":
+        refresh_interval = (os.environ['REFRESH_INTERVAL'])
+        time.sleep(int(refresh_interval))
 
 
 def Diffrance(listA, listB):
@@ -85,6 +93,8 @@ def PrintList(Toprint, name):
         for word in Toprint:
             print('{bc} {:<{}} {bc}'.format(word[0], size1, bc=borderchar) + '{:<{}} {bc}'.format(word[1], size2,
                                                                                                   bc=borderchar))
+
+            g.labels(name, word[0], word[1]).set(1)
         print(linechar * (size1 + size2 + 7))
     print(" ")
 
@@ -129,6 +139,7 @@ def GetUsedResources(v1):
 
 
 def DefinedSvc(v1):
+    EP = []
     try:
         ApiResponce = v1.list_service_for_all_namespaces(watch=False)
     except Exception as e:
@@ -137,11 +148,13 @@ def DefinedSvc(v1):
     for i in ApiResponce.items:
         if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
             pass
-        else:
+        elif i.spec.external_name is None:
             EP.append([i.metadata.name, i.metadata.namespace])
+    return EP
 
 
 def GetUsedServices(v1):
+    UsedEP = []
     try:
         ApiResponce = v1.list_endpoints_for_all_namespaces(watch=False)
     except Exception as e:
@@ -152,9 +165,11 @@ def GetUsedServices(v1):
             pass
         elif i.subsets is not None:
             UsedEP.append([i.metadata.name, i.metadata.namespace])
+    return UsedEP
 
 
 def DefinedSecret(v1):
+    Secrets = []
     try:
         ApiResponce = v1.list_secret_for_all_namespaces(watch=False)
     except Exception as e:
@@ -167,9 +182,11 @@ def DefinedSecret(v1):
             pass
         else:
             Secrets.append([i.metadata.name, i.metadata.namespace])
+    return Secrets
 
 
 def DefinedConfigMap(v1):
+    ConfigMap = []
     try:
         ApiResponce = v1.list_config_map_for_all_namespaces(watch=False)
     except Exception as e:
@@ -180,9 +197,11 @@ def DefinedConfigMap(v1):
             pass
         else:
             ConfigMap.append([i.metadata.name, i.metadata.namespace])
+    return ConfigMap
 
 
 def DefinedPersistentVolumeClaim(v1):
+    PVC = []
     try:
         ApiResponce = v1.list_persistent_volume_claim_for_all_namespaces(watch=False)
     except Exception as e:
@@ -190,9 +209,11 @@ def DefinedPersistentVolumeClaim(v1):
         raise RuntimeError(e)
     for i in ApiResponce.items:
         PVC.append([i.metadata.name, i.metadata.namespace])
+    return PVC
 
 
 def DefinedServiceAccount(v1):
+    SA = []
     try:
         ApiResponce = v1.list_service_account_for_all_namespaces(watch=False)
     except Exception as e:
@@ -203,6 +224,7 @@ def DefinedServiceAccount(v1):
             pass
         else:
             SA.append([i.metadata.name, i.metadata.namespace])
+    return SA
 
 
 def DefinedIngress(V1beta1Api):
@@ -220,12 +242,16 @@ def DefinedIngress(V1beta1Api):
                     if rule.http.paths is not None:
                         for path in rule.http.paths:
                             Ing[i.metadata.name] = ([path.backend.service_name, i.metadata.namespace])
+    return Ing
 
 
 def GetUnusedIng(EP, ExtraSVC):
+    global Ing
+    ExtraIng = []
     for i, j in Ing.items():
         if j not in EP or j in ExtraSVC:
             ExtraIng.append([i, j[1]])
+    Ing.clear()
     return ExtraIng
 
 
@@ -242,16 +268,20 @@ def DefinedRoleBinding(RbacAuthorizationV1Api):
             for sub in i.subjects:
                 if "ServiceAccount" in sub.kind:
                     RoleBinding[i.metadata.name] = ([sub.name, i.metadata.namespace])
+    return RoleBinding
 
 
 def GetUnusedRB(SA, UsedSA):
+    ExtraRoleBinding = []
     for i, j in RoleBinding.items():
         if j not in SA or j in UsedSA:
             ExtraRoleBinding.append([i, j[1]])
+    RoleBinding.clear()
     return ExtraRoleBinding
 
 
 def GetUnusedDeployment(AppsV1Api):
+    ExtraDep = []
     try:
         ApiResponce = AppsV1Api.list_deployment_for_all_namespaces(watch=False)
     except Exception as e:
@@ -263,9 +293,11 @@ def GetUnusedDeployment(AppsV1Api):
         else:
             if i.spec.replicas == 0:
                 ExtraDep.append([i.metadata.name, i.metadata.namespace])
+    return ExtraDep
 
 
 def GetUnusedSTS(AppsV1Api):
+    ExtraSTS = []
     try:
         ApiResponce = AppsV1Api.list_stateful_set_for_all_namespaces(watch=False)
     except Exception as e:
@@ -277,7 +309,17 @@ def GetUnusedSTS(AppsV1Api):
         else:
             if i.spec.replicas == 0:
                 ExtraSTS.append([i.metadata.name, i.metadata.namespace])
+    return ExtraSTS
 
 
 if __name__ == '__main__':
-    main()
+    print("\nThis script is created to find unused resource in Kubernetes\n")
+    parser = argparse.ArgumentParser(description='Parcer to get delete value')
+    parser.add_argument('-t', '--type', help='If need to run as services pass type as svc', required=False)
+    args = parser.parse_args()
+    if args.type == "svc":
+        start_http_server(8000)
+        while True:
+            main("svc")
+    else:
+        main("standalone")

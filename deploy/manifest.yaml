@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8spurger
+  name: k8spurger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8spurger
+  template:
+    metadata:
+      labels:
+        app: k8spurger
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: /metrics
+    spec:
+      serviceAccountName: k8spurger-sa
+      containers:
+      - env:
+        - name: REFRESH_INTERVAL
+          value: "900"
+        image: yogeshkunjir/k8spurger
+        name: k8spurger
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        livenessProbe:
+          failureThreshold: 3
+          timeoutSeconds: 5
+          httpGet:
+            path: /metrics
+            port: http
+        readinessProbe:
+          failureThreshold: 3
+          timeoutSeconds: 5
+          httpGet:
+            path: /metrics
+            port: http
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: k8spurger-svc
+  labels:
+    app: k8spurger
+spec:
+  type: ClusterIP
+  ports:
+    - name: "http"
+      protocol: TCP
+      port: 80
+      targetPort: "http"
+  selector:
+    app: k8spurger
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8spurger-sa
+  labels:
+    app: k8spurger
+    kubernetes.io/cluster-service: "true"
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: k8spurger-cluster-role
+  labels:
+    app: k8spurger
+    kubernetes.io/cluster-service: "true"
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "*"
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: k8spurger-rb
+  labels:
+    app: k8spurger
+    kubernetes.io/cluster-service: "true"
+subjects:
+- kind: ServiceAccount
+  namespace: default
+  name: k8spurger-sa
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: k8spurger-cluster-role
+  apiGroup: ""
+---

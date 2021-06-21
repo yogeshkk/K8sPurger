@@ -30,7 +30,7 @@ Release 0.35
 
  - Refactored to work as a service inside Kubernetes and exporting metrics in Prometheus which can be viewed from Grafana dashboard
  - Added Grafana dashboard
- - Fixed external services as false positive. [Refer issue 4](https://github.com/yogeshkk/K8sPurger/issues/6)
+ - Fixed external services as false positive. [Refer issue 6](https://github.com/yogeshkk/K8sPurger/issues/6)
 
 Release 0.31 
 

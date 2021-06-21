@@ -84,7 +84,6 @@ def PrintList(Toprint, name):
         size2 = max(len(word[1]) for word in Toprint)
         borderchar = '|'
         linechar = '-'
-        # print(name + " Namespaces")
         print(linechar * (size1 + size2 + 7))
         print('{bc} {:<{}} {bc}'.format(name, size1, bc=borderchar) + '{:<{}} {bc}'.format("Namespace", size2,
                                                                                            bc=borderchar))

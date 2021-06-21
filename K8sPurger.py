@@ -18,7 +18,6 @@ def main(svc):
     try:
         if svc == "svc":
             config.load_incluster_config()
-            # config.load_kube_config()
         else:
             config.load_kube_config()
         v1 = client.CoreV1Api()

@@ -86,6 +86,9 @@ Release 0.3
  - ServiceAccount -> If no running pod use that service account
  - Ingress -> If ingress pointing to any services which either do not exist or do not have any endpoint
  - RoleBinding -> If RoleBindding to any Services account which does not exist or that Services account is not used by any running pod.
+ - Deployment -> If deployment have zero replica.
+ - StateFullset -> If StateFullset have zero replica.
+
 
 Exclusion:- All objects in kube-system and kube-system are excluded also all secrets which are token or type TLS are excluded to avoid the high list of false positive.
 

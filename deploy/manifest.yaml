@@ -23,7 +23,7 @@ spec:
       - env:
         - name: REFRESH_INTERVAL
           value: "900"
-        image: yogeshkunjir/k8spurger:v3.5
+        image: yogeshkunjir/k8spurger:v0.35
         name: k8spurger
         ports:
         - name: http

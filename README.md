@@ -106,7 +106,7 @@ NOTE :- Service will scan for unused resources every 15 minutes which you can ch
 ```
 git clone https://github.com/yogeshkk/K8sPurger
 cd K8sPurger
-Kubectl apply -f deploy/manifest.yaml
+kubectl apply -f deploy/manifest.yaml
 ```
 
 Then you can import the k8sPurger Dashboard from deploy folder to create dashbaord like below.

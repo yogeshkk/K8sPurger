@@ -26,6 +26,12 @@ under the License.
 
 ### Release History
 
+Release 0.36 
+
+ - Fixed bug for services. [Refer issue 6](https://github.com/yogeshkk/K8sPurger/issues/11)
+ - Reorgonized documentation.
+ - added sample prometheus rules
+
 Release 0.35
 
  - Refactored to work as a service inside Kubernetes and exporting metrics in Prometheus which can be viewed from Grafana dashboard
@@ -78,7 +84,12 @@ Release 0.3
 > You can raise an issue. I will try to fix the bug. The feature has to look into how much time is required.
 
 
-### Selection Criteria
+
+### Installation and Configuration
+
+There are two ways we can run this utility. Once is ad-hoc another is deploying in Kubernetes itself which will run periodically and capture unused resources and expose them as Prometheus metrics. Once capture in Prometheus one can do all sorts of alerting and visualization. Both ways are covered in the ![Installation](./INSTALL.md) part. 
+
+## Selection Criteria
  - Secret -> If the secret is not mounted on any running pod via env variable or as volume
  - ConfigMap -> If ConfigMap is not mounted on any running pod via env variable or as volume
  - PVC -> Is PVC is not mounted on any running pod
@@ -93,158 +104,6 @@ Release 0.3
 Exclusion:- All objects in kube-system and kube-system are excluded also all secrets which are token or type TLS are excluded to avoid the high list of false positive.
 
 
-## Installation and Configuration
-
-
-
-#### Installing in Kubernetes
-
-Deploy manifest in kubernetes and prometheus should scrape all the metrics.
-
-NOTE :- Service will scan for unused resources every 15 minutes which you can changing by setting REFRESH_INTERVAL(in second) in deployment.yaml
-
-```
-git clone https://github.com/yogeshkk/K8sPurger
-cd K8sPurger
-kubectl apply -f deploy/manifest.yaml
-```
-
-Then you can import the k8sPurger Dashboard from deploy folder to create dashbaord like below.
-
-![grafana](documentation/grafana_dashbaord.png)
-
-
-
-
-###  Running From shell 
-This script use [Python client for Kuberntes](https://github.com/kubernetes-client/python). We need to install that first
-Make sure you have kubeconfig in ~/.kube/conf or in KUBECONFIG env variable before runing script.
-
-```
-pip install kubernetes
-python K8sPurger.py
-```
-
-Output Will look like below
-```
-
-yogesh$ ~/p/K8sPurger> python K8sPurger.py
-
-This script is created to find unused resource in Kubernetes.
-
-Getting unused secret it may take couple of minute..
-
-Extra Secrets are 6 which are as below
-
---------------------------------
-| Secrets         | Namespace   |
---------------------------------
-| app1-secret     | my-apps     |
-| app2-secret     | my-apps     |
-| app2-new-secret | my-apps     |
-| postgresql      | default     |
-| dex-b94455424g  | kube-addons |
-| dex-dbh8fmk699  | kube-addons |
---------------------------------
-
-Getting unused ConfigMap it may take couple of minute..
-
-Extra ConfigMap are 6 which are as below
-
--------------------------------------------
-| ConfigMap                 | Namespace   |
--------------------------------------------
-| app1-configmap            | my-apps     |
-| app2-configmap            | my-apps     |
-| app2-new-configmap        | my-apps     |
-| ss-cm                     | default     |
-| cluster-autoscaler-status | kube-addons |
-| fluent-bit-config         | logging     |
--------------------------------------------
-
-Getting unused PVC it may take couple of minute..
-
-Extra PV Claim are 5 which are as below
----------------------------------
-| PV Claim          | Namespace |
----------------------------------
-| data-postgresql-0 | default   |
-| data-0            | default   |
-| redis-master-0    | default   |
-| redis-slave-0     | default   |
-| redis-slave-1     | default   |
---------------------------------
-
-Getting unused services it may take couple of minute..
-
-Extra Services are 3 which are as below
-
------------------------------
-| Services      | Namespace |
------------------------------
-| app1-services | my-apps   |
-| app2-services | my-apps   |
-| app2-headless | my-apps   |
------------------------------
-
-Getting unused Ingress it may take couple of minute..
-
-Extra Ingress are 4 which are as below
-
-----------------------------------------
-| Ingress                  | Namespace |
-----------------------------------------
-| app1-ingress             | my-apps   |
-| app2-ingress             | my-apps   |
-| app2-ingress-api-gateway | my-apps   |
-| router                   |default    |
-----------------------------------------
-
-Getting unused service account it may take couple of minute..
-
-Extra Service Account are 6 which are as below
-----------------------------------
-| Service Account | Namespace    |
-----------------------------------
-| app1-svc        | my-apps      |
-| cert-svc        | cert-manager |
-| log-svc         | logging      |
-| monitor-svc     | monitoring   |
-| default         | my-registry  |
-| default         | tools        |
-----------------------------------
-
-Getting unused Roles Binding it may take couple of minute..
-
-Extra Role Binding are 1 which are as below
-
----------------------------
-| Role Binding |Namespace |
----------------------------
-| app1-rb      |my-apps   |
----------------------------
-
-
-Extra Deployment are 1 which are as below
-
---------------------------------
-| Deployment         |Namespace |
---------------------------------
-| busybox-deployment |default   |
---------------------------------
- 
-
-Extra Stateful Sets are 1 which are as below
-
-----------------------------
-| Stateful Sets  |Namespace |
-----------------------------
-| nginx-sts-test |default   |
-----------------------------
-
-```
-
-  
 
 ### NOTE:- You can browse code and if like idea provides star for encouragement or provide feedback to me one below social networks.
 

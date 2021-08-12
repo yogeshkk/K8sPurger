@@ -41,7 +41,7 @@ def main(svc):
     ExtraPVC = Diffrance(PVC, UsedPVC)
     PrintList(ExtraPVC, "PV Claim")
     print("Getting unused services it may take couple of minute..")
-    GetUsedServices(v1)
+    UsedEP = GetUsedServices(v1)
     EP = DefinedSvc(v1)
     ExtraSVC = Diffrance(EP, UsedEP)
     PrintList(ExtraSVC, "Services")

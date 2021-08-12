@@ -26,7 +26,7 @@ There are two ways we can run this utility. In kubernets as services and as ad-h
 
 Deploying in Kubernetes itself which will run periodically (every 15 minutes by default) and capture unused resources and expose them as Prometheus metrics. You should configure prometheus or similer tool to scrape this metrics ![Refer this](https://stackoverflow.com/questions/41725767/how-to-scrape-pod-level-info-using-prometheus-kubernetes)
 
-Once you have all The metrics in promethius you can configure prometheus rule to trigger alert. Sample alert are provided in deploy folder deploy/prometheusrule.yaml
+Once you have all The metrics in promethius you can configure prometheus rule to trigger alert. Sample alert are provided in deploy folder deploy/prometheusrule.yaml(./deploy/prometheusrule.yaml)
 
 And you can import k8sPurger Dashboard from deploy folder to create dashbaord like below.
 

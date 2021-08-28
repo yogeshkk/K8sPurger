@@ -27,7 +27,6 @@ under the License.
 I have created a demo video to show end to end use of K8sPurger. I have not shown monitoring setup (prometheus opertator) as there are allready lot of documentation avaliable and it would have made video very long.
 
 
-[![K8sPurger](https://imgur.com/IZzgdwV)](https://www.youtube.com/watch?v=QfDvHcfCihY)
 [![K8sPurger](https://gifs.com/gif/k8spurger-k2rVmx)](https://www.youtube.com/watch?v=QfDvHcfCihY)
 
 ### NAQ (Nobody asked Question).

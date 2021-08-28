@@ -1,0 +1,14 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: k8spurger
+  labels:
+    app: k8spurger
+spec:
+  selector:
+    matchLabels:
+      app: k8spurger
+  podMetricsEndpoints:
+  - port: http
+    path: "/metrics"

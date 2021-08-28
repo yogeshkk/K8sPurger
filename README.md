@@ -21,39 +21,14 @@ under the License.
   
 
 ## Hunt Unused Resources In Kubernetes.
+<br/><br/>
+### K8sPurger in action
+<br/><br/>
+I have created a demo video to show end to end use of K8sPurger. I have not shown monitoring setup (prometheus opertator) as there are allready lot of documentation avaliable and it would have made video very long.
+<br/><br/>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QfDvHcfCihY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<br/><br/>
 
-  
-
-### Release History
-
-Release 0.36 
-
- - Fixed bug for services. [Refer issue 6](https://github.com/yogeshkk/K8sPurger/issues/11)
- - Reorgonized documentation.
- - added sample prometheus rules
-
-Release 0.35
-
- - Refactored to work as a service inside Kubernetes and exporting metrics in Prometheus which can be viewed from Grafana dashboard
- - Added Grafana dashboard
- - Fixed external services as false positive. [Refer issue 6](https://github.com/yogeshkk/K8sPurger/issues/6)
-
-Release 0.31 
-
- - Added Deployment
- - Added Stateful Set
- - Added support for env_from to resolve issue. [Refer issue 4](https://github.com/yogeshkk/K8sPurger/issues/4)
-
-Release 0.3 
-
- - Added Ingress
- - Added Services Account
- - Adding RoleBindding
- - Removed deletion capability. [Refer issue 3](https://github.com/yogeshkk/K8sPurger/issues/3)
-
-
- 
- 
 ### NAQ (Nobody asked Question).
 
 
@@ -108,3 +83,5 @@ Exclusion:- All objects in kube-system and kube-system are excluded also all sec
 ### NOTE:- You can browse code and if like idea provides star for encouragement or provide feedback to me one below social networks.
 
 Twitter https://twitter.com/yogeshkunjir LinkedIn https://www.linkedin.com/in/yogeshkunjir/
+
+<a href='https://ko-fi.com/yogeshkunjir' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee/Book at ko-fi.com' />

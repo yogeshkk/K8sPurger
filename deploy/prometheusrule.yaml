@@ -9,63 +9,63 @@ spec:
   - name: UnusedResources
     rules:
     - alert: UnusedResourceSecretWarning
-      expr: sum(k8s_unused_resources{type="Secrets"} > 0 
+      expr: sum(k8s_unused_resources{type="Secrets"}) > 0
       for: 1d
       annotations:
-        message: 'You have more than 1 unsed Secrets in your cluster'
+        message: "You have more than 1 unsed Secrets in your cluster"
       labels:
         severity: warning
     - alert: UnusedResourceConfigMapWarning
-      expr: sum(k8s_unused_resources{type="ConfigMap"} > 0 
+      expr: sum(k8s_unused_resources{type="ConfigMap"}) > 0 
       for: 1d
       annotations:
         message: 'You have more than 1 unsed ConfigMap in your cluster'
       labels:
         severity: warning
     - alert: UnusedResourcePVClaimWarning
-      expr: sum(k8s_unused_resources{type="PV Claim"} > 0 
+      expr: sum(k8s_unused_resources{type="PV Claim"}) > 0 
       for: 1d
       annotations:
         message: 'You have more than 1 unsed PV Claim in your cluster'
       labels:
         severity: warning
     - alert: UnusedResourceServicesWarning
-      expr: sum(k8s_unused_resources{type="Services"} > 0 
+      expr: sum(k8s_unused_resources{type="Services"}) > 0 
       for: 1d
       annotations:
         message: 'You have more than 1 unsed Services in your cluster'
       labels:
         severity: warning
     - alert: UnusedResourceIngressWarning
-      expr: sum(k8s_unused_resources{type="Ingress"} > 0 
+      expr: sum(k8s_unused_resources{type="Ingress"}) > 0 
       for: 1d
       annotations:
         message: 'You have more than 1 unsed Ingress in your cluster'
       labels:
         severity: warning
     - alert: UnusedResourceServiceAccountWarning
-      expr: sum(k8s_unused_resources{type="Service Account"} > 0 
+      expr: sum(k8s_unused_resources{type="Service Account"}) > 0 
       for: 1d
       annotations:
         message: 'You have more than 1 unsed Service Account in your cluster'
       labels:
         severity: warning
     - alert: UnusedResourceRoleBindingWarning
-      expr: sum(k8s_unused_resources{type="Role Binding"} > 0 
+      expr: sum(k8s_unused_resources{type="Role Binding"}) > 0 
       for: 1d
       annotations:
         message: 'You have more than 1 unsed Role Binding in your cluster'
       labels:
         severity: warning
     - alert: UnusedResourceDeploymentWarning
-      expr: sum(k8s_unused_resources{type="Deployment"} > 0 
+      expr: sum(k8s_unused_resources{type="Deployment"}) > 0 
       for: 1d
       annotations:
         message: 'You have more than 1 unsed Deployment in your cluster'
       labels:
         severity: warning
     - alert: UnusedResourceStatefulSetsWarning
-      expr: sum(k8s_unused_resources{type="Stateful Sets"} > 0 
+      expr: sum(k8s_unused_resources{type="Stateful Sets"}) > 0 
       for: 1d
       annotations:
         message: 'You have more than 1 unsed Stateful Sets in your cluster'

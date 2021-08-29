@@ -47,7 +47,7 @@ kubectl apply -f deploy/manifest.yaml
 Second way is to run as ad-hoc command as and when required. You can run this manually it required [Python client for Kuberntes](https://github.com/kubernetes-client/python). We need to install that first also make sure you have kubeconfig in ~/.kube/conf or in KUBECONFIG env variable before runing script.
 
 ```
-pip install kubernetes
+pip3 install -r requirements.txt
 python K8sPurger.py
 ```
 

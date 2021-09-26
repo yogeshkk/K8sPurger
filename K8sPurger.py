@@ -220,6 +220,8 @@ def DefinedServiceAccount(v1):
     for i in ApiResponce.items:
         if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
             pass
+        elif "default" in i.metadata.name:
+            pass
         else:
             SA.append([i.metadata.name, i.metadata.namespace])
     return SA

@@ -22,12 +22,17 @@ under the License.
 
 ## Hunt Unused Resources In Kubernetes.
 
-### K8sPurger in action
+### K8sPurger Demo Video
 
-I have created a demo video to show end to end use of K8sPurger. I have not shown monitoring setup (prometheus opertator) as there are allready lot of documentation avaliable and it would have made video very long.
+We have few video to show K8sPurger in action. 
 
+Quick one show how to install in cluster and get alert in slack.
+K8sPurger (Duration 4:23) :- https://www.youtube.com/watch?v=QfDvHcfCihY
 
-[![K8sPurger](https://gifs.com/gif/k8spurger-k2rVmx)](https://www.youtube.com/watch?v=QfDvHcfCihY) :- https://www.youtube.com/watch?v=QfDvHcfCihY
+Deep Dive where we have covered all concept and both way to run K8sPurger and many more
+K8sPurger Deep Dive (Duration 38:49) :- https://www.youtube.com/watch?v=AAmCz3lMQC8
+
+We have not shown monitoring setup (prometheus opertator) as there are allready lot of documentation avaliable for same
 
 ### NAQ (Nobody asked Question).
 

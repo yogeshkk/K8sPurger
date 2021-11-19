@@ -20,12 +20,16 @@ spec:
     spec:
       serviceAccountName: k8spurger-sa
       containers:
-      - env:
+      - name: k8spurger
+        image: yogeshkunjir/k8spurger:v0.36
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: 512Mi
+        env:
         - name: REFRESH_INTERVAL
           value: "900"
-        image: yogeshkunjir/k8spurger:v0.36
-        imagePullPolicy: Always
-        name: k8spurger
         ports:
         - name: http
           containerPort: 8000

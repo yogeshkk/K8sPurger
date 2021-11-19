@@ -314,7 +314,7 @@ def GetUnusedSTS(AppsV1Api):
 
 if __name__ == '__main__':
     print("\nThis script is created to find unused resource in Kubernetes\n")
-    parser = argparse.ArgumentParser(description='Parcer to get delete value')
+    parser = argparse.ArgumentParser(description='Parser to get delete value')
     parser.add_argument('-t', '--type', help='If need to run as services pass type as svc', required=False)
     args = parser.parse_args()
     if args.type == "svc":

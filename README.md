@@ -32,7 +32,7 @@ K8sPurger (Duration 4:23) :- https://www.youtube.com/watch?v=QfDvHcfCihY
 Deep Dive where we have covered all concept and both way to run K8sPurger and many more
 K8sPurger Deep Dive (Duration 38:49) :- https://www.youtube.com/watch?v=AAmCz3lMQC8
 
-We have not shown monitoring setup (prometheus opertator) as there are allready lot of documentation avaliable for same
+We have not shown monitoring setup (prometheus operator) as there are already lot of documentation available for same
 
 ### NAQ (Nobody asked Question).
 
@@ -41,7 +41,7 @@ We have not shown monitoring setup (prometheus opertator) as there are allready 
 > This will find all unused resources and show them in a nice format.
 
 2) Why you need this?
->When we add a new application or Microservices it is simple as installing a chart or kubectl -f on a big manifest but when we want to remove we don't know what are resources it created. Many times we can't remove them fully because we have 10's or 100's such resources and don’t have enough time to hunt and kill or many times we just inherited a cluster. Having an unused item in the cluster is not good practice as the Etcd DB size grows the performance starts degrading. Also many times it possed a security risk(unknown SA and rolebinding). 
+>When we add a new application or Microservices it is simple as installing a chart or kubectl -f on a big manifest but when we want to remove we don't know what are resources it created. Many times we can't remove them fully because we have 10's or 100's such resources and don’t have enough time to hunt and kill or many times we just inherited a cluster. Having an unused item in the cluster is not good practice as the Etcd DB size grows the performance starts degrading. Also many times it possessed a security risk(unknown SA and rolebinding). 
 
 >Lastly most dear to us saving cost in case of PVC we are paying for them to cloud provider.
 
@@ -76,7 +76,7 @@ There are two ways we can run this utility. Once is ad-hoc another is deploying 
  - Services -> If services do not any endpoint
  - ServiceAccount -> If no running pod use that service account
  - Ingress -> If ingress pointing to any services which either do not exist or do not have any endpoint
- - RoleBinding -> If RoleBindding to any Services account which does not exist or that Services account is not used by any running pod.
+ - RoleBinding -> If RoleBinding to any Services account which does not exist or that Services account is not used by any running pod.
  - Deployment -> If deployment have zero replica.
  - StateFullset -> If StateFullset have zero replica.
 

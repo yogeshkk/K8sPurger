@@ -11,6 +11,7 @@ UsedSecret, UsedConfigMap, UsedPVC, UsedEP, UsedSA, ExtraIng = [], [], [], [], [
 Ing, RoleBinding = {}, {}
 g = Gauge('k8s_unused_resources', 'show unused resources in k8s', ['type', 'name', 'namespaces'])
 
+ExcludedNamespacesList = ["kube-system", "kube-public"]
 
 
 def main(svc):
@@ -67,6 +68,12 @@ def main(svc):
         time.sleep(int(refresh_interval))
 
 
+def ExludedNamespace(namespace):
+    for ens in ExcludedNamespacesList:
+        if ens in namespace:
+            return True
+    return False
+
 def Diffrance(listA, listB):
     listC = []
     for i in listA:
@@ -104,7 +111,7 @@ def GetUsedResources(v1):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         else:
             container = i.spec.containers
@@ -144,7 +151,7 @@ def DefinedSvc(v1):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         elif i.spec.external_name is None:
             EP.append([i.metadata.name, i.metadata.namespace])
@@ -159,7 +166,7 @@ def GetUsedServices(v1):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         elif i.subsets is not None:
             UsedEP.append([i.metadata.name, i.metadata.namespace])
@@ -174,7 +181,7 @@ def DefinedSecret(v1):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         elif i.type in "kubernetes.io/tls" or i.type in "kubernetes.io/service-account-token":
             pass
@@ -191,7 +198,7 @@ def DefinedConfigMap(v1):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         else:
             ConfigMap.append([i.metadata.name, i.metadata.namespace])
@@ -218,7 +225,7 @@ def DefinedServiceAccount(v1):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         elif "default" in i.metadata.name:
             pass
@@ -234,7 +241,7 @@ def DefinedIngress(V1beta1Api):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         else:
             if i.spec.rules is not None:
@@ -262,7 +269,7 @@ def DefinedRoleBinding(RbacAuthorizationV1Api):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         else:
             for sub in i.subjects:
@@ -288,7 +295,7 @@ def GetUnusedDeployment(AppsV1Api):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         else:
             if i.spec.replicas == 0:
@@ -304,7 +311,7 @@ def GetUnusedSTS(AppsV1Api):
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
     for i in ApiResponce.items:
-        if "kube-system" in i.metadata.namespace or "kube-public" in i.metadata.namespace:
+        if ExludedNamespace(i.metadata.namespace):
             pass
         else:
             if i.spec.replicas == 0:

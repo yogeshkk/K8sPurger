@@ -75,11 +75,7 @@ def ExludedNamespace(namespace):
     return False
 
 def Diffrance(listA, listB):
-    listC = []
-    for i in listA:
-        if i not in listB:
-            listC.append(i)
-    return listC
+    return [i for i in listA if i not in listB]
 
 
 def PrintList(Toprint, name):

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import argparse
 import os
@@ -12,6 +12,7 @@ Ing, RoleBinding = {}, {}
 g = Gauge('k8s_unused_resources', 'show unused resources in k8s', ['type', 'name', 'namespaces'])
 
 ExcludedNamespacesList = ["kube-system", "kube-public"]
+ExcludedSecretTypes = ["kubernetes.io/tls", "kubernetes.io/service-account-token", "kubernetes.io/dockercfg"]
 
 
 def main(svc):
@@ -22,7 +23,10 @@ def main(svc):
         else:
             config.load_kube_config()
         v1 = client.CoreV1Api()
-        v1beta1Api = client.ExtensionsV1beta1Api()
+        try:
+            v1IngressApi = client.ExtensionsV1beta1Api()
+        except:
+            v1IngressApi = client.NetworkingV1Api()
         RbacAuthorizationV1Api = client.RbacAuthorizationV1Api()
         AppsV1Api = client.AppsV1Api()
     except Exception as e:
@@ -47,7 +51,7 @@ def main(svc):
     ExtraSVC = Diffrance(EP, UsedEP)
     PrintList(ExtraSVC, "Services")
     print("Getting unused Ingress it may take couple of minute..")
-    DefinedIngress(v1beta1Api)
+    DefinedIngress(v1IngressApi)
     ExtraIng = GetUnusedIng(EP, ExtraSVC)
     PrintList(ExtraIng, "Ingress")
     print("Getting unused service account it may take couple of minute..")
@@ -179,7 +183,7 @@ def DefinedSecret(v1):
     for i in ApiResponce.items:
         if ExludedNamespace(i.metadata.namespace):
             pass
-        elif i.type in "kubernetes.io/tls" or i.type in "kubernetes.io/service-account-token":
+        elif i.type in ExcludedSecretTypes:
             pass
         else:
             Secrets.append([i.metadata.name, i.metadata.namespace])
@@ -230,9 +234,9 @@ def DefinedServiceAccount(v1):
     return SA
 
 
-def DefinedIngress(V1beta1Api):
+def DefinedIngress(v1IngressApi):
     try:
-        ApiResponce = V1beta1Api.list_ingress_for_all_namespaces(watch=False)
+        ApiResponce = v1IngressApi.list_ingress_for_all_namespaces(watch=False)
     except Exception as e:
         print("Not able to reach Kubernetes cluster check Kubeconfig")
         raise RuntimeError(e)
@@ -244,7 +248,11 @@ def DefinedIngress(V1beta1Api):
                 for rule in i.spec.rules:
                     if rule.http.paths is not None:
                         for path in rule.http.paths:
-                            Ing[i.metadata.name] = ([path.backend.service_name, i.metadata.namespace])
+                            try:
+                                service_name = path.backend.service_name
+                            except:
+                                service_name = path.backend.service.name
+                            Ing[i.metadata.name] = ([service_name, i.metadata.namespace])
     return Ing
 
 

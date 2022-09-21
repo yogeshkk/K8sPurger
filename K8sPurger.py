@@ -282,10 +282,10 @@ def DefinedRoleBinding(RbacAuthorizationV1Api):
     return RoleBinding
 
 
-def GetUnusedRB(SA, UsedSA):
+def GetUnusedRB(SA, ExtraSA):
     ExtraRoleBinding = []
     for i, j in RoleBinding.items():
-        if j not in SA or j in UsedSA:
+        if j not in SA or j in ExtraSA:
             ExtraRoleBinding.append([i, j[1]])
     RoleBinding.clear()
     return ExtraRoleBinding

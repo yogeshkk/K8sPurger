@@ -304,6 +304,16 @@ def GetUnusedDeployment(AppsV1Api):
         else:
             if i.spec.replicas == 0:
                 ExtraDep.append([i.metadata.name, i.metadata.namespace])
+             """
+                i.status = V1DeploymentStatus, DeploymentStatus is the most recently observed status of the Deployment.
+                i.status.available_replicas = Total number of available pods (ready for at least minReadySeconds) targeted by this deployment.
+                i.status.ready_replicas = readyReplicas is the number of pods targeted by this Deployment with a Ready Condition.
+                i.status.unavailable_replicas = Total number of unavailable pods targeted by this deployment. 
+            """
+            if (not i.status.available_replicas) or (not i.status.ready_replicas) or i.status.unavailable_replicas:
+                if i.metadata.name == "k8spurger":
+                    continue
+                ExtraDep.append([i.metadata.name, i.metadata.namespace])
     return ExtraDep
 
 
@@ -320,6 +330,13 @@ def GetUnusedSTS(AppsV1Api):
         else:
             if i.spec.replicas == 0:
                 ExtraSTS.append([i.metadata.name, i.metadata.namespace])
+            """
+                i.status = V1StatefulSetStatus, StatefulSetStatus represents the current state of a StatefulSet.
+                i.status.available_replicas = Total number of available pods (ready for at least minReadySeconds) targeted by this statefulset. 
+                i.status.ready_replicas = readyReplicas is the number of pods created for this StatefulSet with a Ready Condition.
+            """
+            if (not i.status.available_replicas) or (not i.status.ready_replicas):
+                ExtraSTS.append([i.metadata.name, i.metadata.namespace, i.metadata.creation_timestamp])
     return ExtraSTS
 
 
